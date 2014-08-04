@@ -996,7 +996,7 @@ Pressing `1' will switch between these two options."
 
 \[j] export as TaskJuggler                         [J] ... and open
 
-\[m] export as Freemind mind map
+\[m] export as Freemind/Freeplane mind map
 \[x] export as XOXO
 \[g] export using Wes Hardaker's generic exporter
 

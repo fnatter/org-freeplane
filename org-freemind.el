@@ -574,7 +574,7 @@ DRAWERS-REGEXP are converted to freemind notes."
       (setq this-rich-note (nth 1 node-notes)))
     (with-current-buffer mm-buffer
       (insert "<node " (if this-m2-link this-m2-link "")
-	      "text=\"" this-m2-escaped "\"")
+	      "TEXT=\"" this-m2-escaped "\"")
       (org-freemind-get-node-style this-m2)
       (when (> next-level current-level)
         (unless (or this-children-visible
@@ -589,7 +589,7 @@ DRAWERS-REGEXP are converted to freemind notes."
       (insert ">\n")
       (when this-icons
         (dolist (icon this-icons)
-          (insert "<icon builtin=\"" icon "\"/>\n")))
+          (insert "<icon BUILTIN=\"" icon "\"/>\n")))
       )
     (with-current-buffer mm-buffer
       ;;(when this-rich-note (insert this-rich-note))
@@ -668,7 +668,7 @@ Otherwise give an error say the file exists."
           ;; Fix-me: Currently Freemind (ver 0.9.0 RC9) does not support this:
           ;;(insert "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n")
           (insert "<map version=\"0.9.0\">\n")
-          (insert "<!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->\n"))
+          (insert "<!-- To view this file, download free mind mapping software FreeMind or Freeplane from http://freemind.sourceforge.net/http://freeplane.org -->\n"))
         (save-excursion
           ;; Get special buffer vars:
           (goto-char (point-min))
@@ -732,7 +732,7 @@ Otherwise give an error say the file exists."
                                    (file-name-nondirectory (buffer-file-name))
                                  (buffer-name))))
                 (with-current-buffer mm-buffer
-                  (insert "<node text=\"" orig-name "\" background_color=\"#00bfff\">\n"
+                  (insert "<node TEXT=\"" orig-name "\" background_color=\"#00bfff\">\n"
                           ;; Put a note that this is for the parent node
                           "<richcontent TYPE=\"NOTE\"><html>"
                           "<head>"
@@ -1139,7 +1139,7 @@ PATH should be a list of steps, where each step has the form
          names)
     (dolist (icn icon-nodes)
       (setq names (cons (cdr (assq 'builtin (cadr icn))) names)))
-    ;; (icon (builtin . "full-1"))
+    ;; (icon (builtin . "full-1")) ;; TODO:Felix??
     names))
 
 (defun org-freemind-node-to-org (node level skip-levels)
