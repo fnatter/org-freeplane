@@ -562,6 +562,7 @@ DRAWERS-REGEXP are converted to freeplane notes."
             (add-to-list 'this-icons "full-7"))
            ))))
 
+    ;; format todo items that are DONE
     (when (string-match "DONE" this-m2)
       (setq this-m2 (replace-match "" nil nil this-m2))
       (add-to-list 'this-icons "checked"))
