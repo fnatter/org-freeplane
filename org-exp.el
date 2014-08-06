@@ -996,7 +996,8 @@ Pressing `1' will switch between these two options."
 
 \[j] export as TaskJuggler                         [J] ... and open
 
-\[m] export as Freemind/Freeplane mind map
+\[m] export as Freemind mind map
+\[f] export as Freeplane mind map
 \[x] export as XOXO
 \[g] export using Wes Hardaker's generic exporter
 
@@ -1027,6 +1028,7 @@ Pressing `1' will switch between these two options."
 	    (?j org-export-as-taskjuggler t)
 	    (?J org-export-as-taskjuggler-and-open t)
 	    (?m org-export-as-freemind t)
+	    (?f org-export-as-freeplane t)
 	    (?l org-export-as-latex t)
 	    (?p org-export-as-pdf t)
 	    (?d org-export-as-pdf-and-open t)

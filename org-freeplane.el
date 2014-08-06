@@ -1,4 +1,4 @@
-;;; org-freemind.el --- Export Org files to freemind
+;;; org-freeplane.el --- Export Org files to freeplane
 
 ;; Copyright (C) 2009-2013 Free Software Foundation, Inc.
 
@@ -34,26 +34,26 @@
 ;;; Commentary:
 ;;
 ;; This file tries to implement some functions useful for
-;; transformation between org-mode and FreeMind files.
+;; transformation between org-mode and Freeplane files.
 ;;
 ;; Here are the commands you can use:
 ;;
-;;    M-x `org-freemind-from-org-mode'
-;;    M-x `org-freemind-from-org-mode-node'
-;;    M-x `org-freemind-from-org-sparse-tree'
+;;    M-x `org-freeplane-from-org-mode'
+;;    M-x `org-freeplane-from-org-mode-node'
+;;    M-x `org-freeplane-from-org-sparse-tree'
 ;;
-;;    M-x `org-freemind-to-org-mode'
+;;    M-x `org-freeplane-to-org-mode'
 ;;
-;;    M-x `org-freemind-show'
+;;    M-x `org-freeplane-show'
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
 ;;
 ;; 2009-02-15: Added check for next level=current+1
-;; 2009-02-21: Fixed bug in `org-freemind-to-org-mode'.
+;; 2009-02-21: Fixed bug in `org-freeplane-to-org-mode'.
 ;; 2009-10-25: Added support for `org-odd-levels-only'.
-;;             Added y/n question before showing in FreeMind.
+;;             Added y/n question before showing in Freeplane.
 ;; 2009-11-04: Added support for #+BEGIN_HTML.
 ;;
 ;;; Code:
@@ -64,35 +64,35 @@
 (require 'org-exp)
 (eval-when-compile (require 'cl))
 
-(defgroup org-freemind nil
-  "Customization group for org-freemind export/import."
+(defgroup org-freeplane nil
+  "Customization group for org-freeplane export/import."
   :group 'org)
 
 ;; Fix-me: I am not sure these are useful:
 ;;
-;; (defcustom org-freemind-main-fgcolor "black"
+;; (defcustom org-freeplane-main-fgcolor "black"
 ;;   "Color of main node's text."
 ;;   :type 'color
-;;   :group 'org-freemind)
+;;   :group 'org-freeplane)
 
-;; (defcustom org-freemind-main-color "black"
+;; (defcustom org-freeplane-main-color "black"
 ;;   "Background color of main node."
 ;;   :type 'color
-;;   :group 'org-freemind)
+;;   :group 'org-freeplane)
 
-;; (defcustom org-freemind-child-fgcolor "black"
+;; (defcustom org-freeplane-child-fgcolor "black"
 ;;   "Color of child nodes' text."
 ;;   :type 'color
-;;   :group 'org-freemind)
+;;   :group 'org-freeplane)
 
-;; (defcustom org-freemind-child-color "black"
+;; (defcustom org-freeplane-child-color "black"
 ;;   "Background color of child nodes."
 ;;   :type 'color
-;;   :group 'org-freemind)
+;;   :group 'org-freeplane)
 
-(defvar org-freemind-node-style nil "Internal use.")
+(defvar org-freeplane-node-style nil "Internal use.")
 
-(defcustom org-freemind-node-styles nil
+(defcustom org-freeplane-node-styles nil
   "Styles to apply to node.
 NOT READY YET."
   :type '(repeat
@@ -135,12 +135,12 @@ NOT READY YET."
                                   (string :tag "Font name" :value "SansSerif"))
                             (list :format "%v" (const :format "" font-size)
                                   (integer :tag "Font size" :value 12)))))))
-  :group 'org-freemind)
+  :group 'org-freeplane)
 
 ;;;###autoload
-(defun org-export-as-freemind (&optional hidden ext-plist
+(defun org-export-as-freeplane (&optional hidden ext-plist
 					 to-buffer body-only pub-dir)
-  "Export the current buffer as a Freemind file.
+  "Export the current buffer as a Freeplane file.
 If there is an active region, export only the region.  HIDDEN is
 obsolete and does nothing.  EXT-PLIST is a property list with
 external parameters overriding org-mode's default settings, but
@@ -153,7 +153,7 @@ simply return the content of the document (all top level
 sections).  When PUB-DIR is set, use this as the publishing
 directory.
 
-See `org-freemind-from-org-mode' for more information."
+See `org-freeplane-from-org-mode' for more information."
   (interactive "P")
   (let* ((opt-plist (org-combine-plists (org-default-export-plist)
 					ext-plist
@@ -187,17 +187,17 @@ See `org-freemind-from-org-mode' for more information."
       (delete-file filename))
     (cond
      (subtree-p
-      (org-freemind-from-org-mode-node (line-number-at-pos rbeg)
+      (org-freeplane-from-org-mode-node (line-number-at-pos rbeg)
 				       filename))
-     (t (org-freemind-from-org-mode bfname filename)))))
+     (t (org-freeplane-from-org-mode bfname filename)))))
 
 ;;;###autoload
-(defun org-freemind-show (mm-file)
-  "Show file MM-FILE in Freemind."
+(defun org-freeplane-show (mm-file)
+  "Show file MM-FILE in Freeplane."
   (interactive
    (list
     (save-match-data
-      (let ((name (read-file-name "FreeMind file: "
+      (let ((name (read-file-name "Freeplane file: "
                                   nil nil nil
                                   (if (buffer-file-name)
                                       (let* ((name-ext (file-name-nondirectory (buffer-file-name)))
@@ -210,7 +210,7 @@ See `org-freemind-from-org-mode' for more information."
                                           (let ((name-mm (concat name ".mm")))
                                             (if (file-exists-p name-mm)
                                                 name-mm
-                                              (message "Not exported to Freemind format yet")
+                                              (message "Not exported to Freeplane format yet")
                                               "")))
                                          (t
                                           "")))
@@ -224,12 +224,12 @@ See `org-freemind-from-org-mode' for more information."
         name))))
   (org-open-file mm-file))
 
-(defconst org-freemind-org-nfix "--org-mode: ")
+(defconst org-freeplane-org-nfix "--org-mode: ")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Format converters
 
-(defun org-freemind-escape-str-from-org (org-str)
+(defun org-freeplane-escape-str-from-org (org-str)
   "Do some html-escaping of ORG-STR and return the result.
 The characters \"&<> will be escaped."
   (let ((chars (append org-str nil))
@@ -255,11 +255,11 @@ The characters \"&<> will be escaped."
                       ))))
     fm-str))
 
-;;(org-freemind-unescape-str-to-org "&#x6d;A&#x224C;B&lt;C&#x3C;&#x3D;")
-;;(org-freemind-unescape-str-to-org "&#x3C;&lt;")
-(defun org-freemind-unescape-str-to-org (fm-str)
+;;(org-freeplane-unescape-str-to-org "&#x6d;A&#x224C;B&lt;C&#x3C;&#x3D;")
+;;(org-freeplane-unescape-str-to-org "&#x3C;&lt;")
+(defun org-freeplane-unescape-str-to-org (fm-str)
   "Do some html-unescaping of FM-STR and return the result.
-This is the opposite of `org-freemind-escape-str-from-org' but it
+This is the opposite of `org-freeplane-escape-str-from-org' but it
 will also unescape &#nn;."
   (let ((org-str fm-str))
     (setq org-str (replace-regexp-in-string "&quot;" "\"" org-str))
@@ -276,13 +276,13 @@ will also unescape &#nn;."
 		   org-str))))
 
 ;; (let* ((str1 "a quote: \", an amp: &, lt: <; over 256: öåäÖÅÄ")
-;;        (str2 (org-freemind-escape-str-from-org str1))
-;;        (str3 (org-freemind-unescape-str-to-org str2)))
+;;        (str2 (org-freeplane-escape-str-from-org str1))
+;;        (str3 (org-freeplane-unescape-str-to-org str2)))
 ;;     (unless (string= str1 str3)
 ;;       (error "Error str3=%s" str3)))
 
-(defun org-freemind-convert-links-helper (matched)
-  "Helper for `org-freemind-convert-links-from-org'.
+(defun org-freeplane-convert-links-helper (matched)
+  "Helper for `org-freeplane-convert-links-from-org'.
 MATCHED is the link just matched."
   (let* ((link (match-string 1 matched))
          (text (match-string 2 matched))
@@ -308,8 +308,8 @@ MATCHED is the link just matched."
                 "</td></tr></table>")
       (concat "<a href=\"" link "\">" text "</a>"))))
 
-(defun org-freemind-convert-links-from-org (org-str)
-  "Convert org links in ORG-STR to freemind links and return the result."
+(defun org-freeplane-convert-links-from-org (org-str)
+  "Convert org links in ORG-STR to freeplane links and return the result."
   (let ((fm-str (replace-regexp-in-string
                  ;;(rx (not (any "[\""))
                  ;;    (submatch
@@ -333,12 +333,12 @@ MATCHED is the link just matched."
      ;; "]]")
      "\\[\\[\\(.*?\\)]\\[\\(.*?\\)]]"
      ;;"<a href=\"\\1\">\\2</a>"
-     'org-freemind-convert-links-helper
+     'org-freeplane-convert-links-helper
      fm-str t t)))
 
-;;(org-freemind-convert-links-to-org "<a href=\"http://www.somewhere/\">link-text</a>")
-(defun org-freemind-convert-links-to-org (fm-str)
-  "Convert freemind links in FM-STR to org links and return the result."
+;;(org-freeplane-convert-links-to-org "<a href=\"http://www.somewhere/\">link-text</a>")
+(defun org-freeplane-convert-links-to-org (fm-str)
+  "Convert freeplane links in FM-STR to org links and return the result."
   (let ((org-str (replace-regexp-in-string
                   ;;(rx "<a"
                   ;;    space
@@ -358,29 +358,29 @@ MATCHED is the link just matched."
     org-str))
 
 ;; Fix-me:
-;;(defun org-freemind-convert-drawers-from-org (text)
+;;(defun org-freeplane-convert-drawers-from-org (text)
 ;;  )
 
 ;;   (let* ((str1 "[[http://www.somewhere/][link-text]")
-;;          (str2 (org-freemind-convert-links-from-org str1))
-;;        (str3 (org-freemind-convert-links-to-org str2)))
+;;          (str2 (org-freeplane-convert-links-from-org str1))
+;;        (str3 (org-freeplane-convert-links-to-org str2)))
 ;;     (unless (string= str1 str3)
 ;;     (error "Error str3=%s" str3)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Org => FreeMind
+;;; Org => Freeplane
 
-(defvar org-freemind-bol-helper-base-indent nil)
+(defvar org-freeplane-bol-helper-base-indent nil)
 
-(defun org-freemind-bol-helper (matched)
-  "Helper for `org-freemind-convert-text-p'.
+(defun org-freeplane-bol-helper (matched)
+  "Helper for `org-freeplane-convert-text-p'.
 MATCHED is the link just matched."
   (let ((res "")
-        (bi org-freemind-bol-helper-base-indent))
+        (bi org-freeplane-bol-helper-base-indent))
     (dolist (cc (append matched nil))
       (if (= 32 cc)
           ;;(setq res (concat res "&nbsp;"))
-          ;; We need to use the numerical version.  Otherwise Freemind
+          ;; We need to use the numerical version.  Otherwise Freeplane
           ;; ver 0.9.0 RC9 can not export to html/javascript.
           (progn
             (if (< 0 bi)
@@ -388,46 +388,46 @@ MATCHED is the link just matched."
               (setq res (concat res "&#160;"))))
         (setq res (concat res (char-to-string cc)))))
     res))
-;; (setq x (replace-regexp-in-string "\n +" 'org-freemind-bol-nbsp-helper "\n  "))
+;; (setq x (replace-regexp-in-string "\n +" 'org-freeplane-bol-nbsp-helper "\n  "))
 
-(defun org-freemind-convert-text-p (text)
+(defun org-freeplane-convert-text-p (text)
   "Convert TEXT to html with <p> paragraphs."
   ;; (string-match-p "[^ ]" "  a")
-  (setq org-freemind-bol-helper-base-indent (org-string-match-p "[^ ]" text))
-  (setq text (org-freemind-escape-str-from-org text))
+  (setq org-freeplane-bol-helper-base-indent (org-string-match-p "[^ ]" text))
+  (setq text (org-freeplane-escape-str-from-org text))
 
   (setq text (replace-regexp-in-string "\\([[:space:]]\\)\\(/\\)\\([^/]+\\)\\(/\\)\\([[:space:]]\\)" "\\1<i>\\3</i>\\5" text))
   (setq text (replace-regexp-in-string "\\([[:space:]]\\)\\(\*\\)\\([^*]+\\)\\(\*\\)\\([[:space:]]\\)" "\\1<b>\\3</b>\\5" text))
 
   (setq text (concat "<p>" text))
   (setq text (replace-regexp-in-string "\n[[:blank:]]*\n" "</p><p>" text))
-  (setq text (replace-regexp-in-string "\\(?:<p>\\|\n\\) +" 'org-freemind-bol-helper text))
+  (setq text (replace-regexp-in-string "\\(?:<p>\\|\n\\) +" 'org-freeplane-bol-helper text))
   (setq text (replace-regexp-in-string "\n" "<br />" text))
   (setq text (concat text "</p>"))
 
-  (org-freemind-convert-links-from-org text))
+  (org-freeplane-convert-links-from-org text))
 
-(defcustom org-freemind-node-css-style
+(defcustom org-freeplane-node-css-style
   "p { margin-top: 3px; margin-bottom: 3px; }"
-  "CSS style for Freemind nodes."
-  ;; Fix-me: I do not understand this.  It worked to export from Freemind
+  "CSS style for Freeplane nodes."
+  ;; Fix-me: I do not understand this.  It worked to export from Freeplane
   ;; with this setting now, but not before??? Was this perhaps a java
   ;; bug or is it a windows xp bug (some resource gets exhausted if you
   ;; use sticky keys which I do).
   :version "24.1"
-  :group 'org-freemind)
+  :group 'org-freeplane)
 
-(defun org-freemind-org-text-to-freemind-subnode/note (node-name start end drawers-regexp)
-  "Convert text part of org node to freemind subnode or note.
+(defun org-freeplane-org-text-to-freeplane-subnode/note (node-name start end drawers-regexp)
+  "Convert text part of org node to freeplane subnode or note.
 Convert the text part of the org node named NODE-NAME. The text
 is in the current buffer between START and END. Drawers matching
-DRAWERS-REGEXP are converted to freemind notes."
+DRAWERS-REGEXP are converted to freeplane notes."
   ;; fix-me: doc
   (let ((text (buffer-substring-no-properties start end))
         (node-res "")
         (note-res ""))
     (save-match-data
-      ;;(setq text (org-freemind-escape-str-from-org text))
+      ;;(setq text (org-freeplane-escape-str-from-org text))
       ;; First see if there is something that should be moved to the
       ;; note part:
       (let (drawers)
@@ -443,7 +443,7 @@ DRAWERS-REGEXP are converted to freemind notes."
               (dolist (line lines)
                 (setq note-res (concat
                                 note-res
-                                org-freemind-org-nfix line "<br />\n")))
+                                org-freeplane-org-nfix line "<br />\n")))
               ))))
 
       (when (> (length note-res) 0)
@@ -463,12 +463,12 @@ DRAWERS-REGEXP are converted to freemind notes."
                         "<node style=\"bubble\" background_color=\"#eeee00\">\n"
                         "<richcontent TYPE=\"NODE\"><html>\n"
                         "<head>\n"
-                        (if (= 0 (length org-freemind-node-css-style))
+                        (if (= 0 (length org-freeplane-node-css-style))
                             ""
                           (concat
 			   "<style type=\"text/css\">\n"
 			   "<!--\n"
-                           org-freemind-node-css-style
+                           org-freeplane-node-css-style
 			   "-->\n"
                            "</style>\n"))
                         "</head>\n"
@@ -484,19 +484,19 @@ DRAWERS-REGEXP are converted to freemind notes."
             (setq head (substring text 0 (match-beginning 0)))
             (setq end-pos-match (match-end 0))
             (setq node-res (concat node-res
-                                   (org-freemind-convert-text-p head)))
+                                   (org-freeplane-convert-text-p head)))
             (setq text (substring text end-pos-match))
             (setq end-pos (string-match end-html-mark text))
             (if end-pos
                 (setq end-pos-match (match-end 0))
-              (message "org-freemind: Missing #+END_HTML")
+              (message "org-freeplane: Missing #+END_HTML")
               (setq end-pos (length text))
               (setq end-pos-match end-pos))
             (setq node-res (concat node-res
                                    (substring text 0 end-pos)))
             (setq text (substring text end-pos-match)))
           (setq node-res (concat node-res
-                                 (org-freemind-convert-text-p text))))
+                                 (org-freeplane-convert-text-p text))))
         (setq node-res (concat
                         node-res
                         "</body>\n"
@@ -518,23 +518,23 @@ DRAWERS-REGEXP are converted to freemind notes."
                         )))
       (list node-res note-res))))
 
-(defun org-freemind-write-node (mm-buffer drawers-regexp
-					  num-left-nodes base-level
-					  current-level next-level this-m2
-					  this-node-end
-					  this-children-visible
-					  next-node-start
-					  next-has-some-visible-child)
+(defun org-freeplane-write-node (mm-buffer drawers-regexp
+                                          num-left-nodes base-level
+                                          current-level next-level this-m2
+                                          this-node-end
+                                          this-children-visible
+                                          next-node-start
+                                          next-has-some-visible-child)
   (let* (this-icons
          this-bg-color
-	 this-m2-link
+         this-m2-link
          this-m2-escaped
          this-rich-node
          this-rich-note
          )
     (when (string-match "TODO" this-m2)
       (setq this-m2 (replace-match "" nil nil this-m2))
-      (add-to-list 'this-icons "button_cancel")
+      (add-to-list 'this-icons "unchecked")
       (setq this-bg-color "#ffff88")
       (when (string-match "\\[#\\(.\\)\\]" this-m2)
         (let ((prior (string-to-char (match-string 1 this-m2))))
@@ -559,13 +559,18 @@ DRAWERS-REGEXP are converted to freemind notes."
            ((= prior ?G)
             (add-to-list 'this-icons "full-7"))
            ))))
+
+    (when (string-match "DONE" this-m2)
+      (setq this-m2 (replace-match "" nil nil this-m2))
+      (add-to-list 'this-icons "checked"))
+
     (setq this-m2 (org-trim this-m2))
     (when (string-match org-bracket-link-analytic-regexp this-m2)
-      (setq this-m2-link (concat "link=\"" (match-string 1 this-m2)
-				 (match-string 3 this-m2) "\" ")
-	    this-m2 (replace-match "\\5" nil nil this-m2 0)))
-    (setq this-m2-escaped (org-freemind-escape-str-from-org this-m2))
-    (let ((node-notes (org-freemind-org-text-to-freemind-subnode/note
+      (setq this-m2-link (concat "LINK=\"" (match-string 1 this-m2)
+                                 (match-string 3 this-m2) "\" ")
+            this-m2 (replace-match "\\5" nil nil this-m2 0)))
+    (setq this-m2-escaped (org-freeplane-escape-str-from-org this-m2))
+    (let ((node-notes (org-freeplane-org-text-to-freeplane-subnode/note
                        this-m2-escaped
                        this-node-end
                        (1- next-node-start)
@@ -574,18 +579,18 @@ DRAWERS-REGEXP are converted to freemind notes."
       (setq this-rich-note (nth 1 node-notes)))
     (with-current-buffer mm-buffer
       (insert "<node " (if this-m2-link this-m2-link "")
-	      "TEXT=\"" this-m2-escaped "\"")
-      (org-freemind-get-node-style this-m2)
+              "TEXT=\"" this-m2-escaped "\"")
+      (org-freeplane-get-node-style this-m2)
       (when (> next-level current-level)
         (unless (or this-children-visible
                     next-has-some-visible-child)
-          (insert " folded=\"true\"")))
+          (insert " FOLDED=\"true\"")))
       (when (and (= current-level (1+ base-level))
                  (> num-left-nodes 0))
         (setq num-left-nodes (1- num-left-nodes))
-        (insert " position=\"left\""))
+        (insert " POSITION=\"left\""))
       (when this-bg-color
-        (insert " background_color=\"" this-bg-color "\""))
+        (insert " BACKGROUND_COLOR=\"" this-bg-color "\""))
       (insert ">\n")
       (when this-icons
         (dolist (icon this-icons)
@@ -596,7 +601,7 @@ DRAWERS-REGEXP are converted to freemind notes."
       (when this-rich-node (insert this-rich-node))))
   num-left-nodes)
 
-(defun org-freemind-check-overwrite (file interactively)
+(defun org-freeplane-check-overwrite (file interactively)
   "Check if file FILE already exists.
 If FILE does not exists return t.
 
@@ -610,7 +615,7 @@ Otherwise give an error say the file exists."
         (error "File %s already exists" file))
     t))
 
-(defvar org-freemind-node-pattern
+(defvar org-freeplane-node-pattern
   ;;(rx bol
   ;;    (submatch (1+ "*"))
   ;;    (1+ space)
@@ -618,12 +623,12 @@ Otherwise give an error say the file exists."
   ;;    eol)
   "^\\(\\*+\\)[[:space:]]+\\(.*?\\)$")
 
-(defun org-freemind-look-for-visible-child (node-level)
+(defun org-freeplane-look-for-visible-child (node-level)
   (save-excursion
     (save-match-data
       (let ((found-visible-child nil))
         (while (and (not found-visible-child)
-                    (re-search-forward org-freemind-node-pattern nil t))
+                    (re-search-forward org-freeplane-node-pattern nil t))
           (let* ((m1 (match-string-no-properties 1))
                  (level (length m1)))
             (if (>= node-level level)
@@ -633,19 +638,19 @@ Otherwise give an error say the file exists."
         (eq found-visible-child 'found)
         ))))
 
-(defun org-freemind-goto-line (line)
+(defun org-freeplane-goto-line (line)
   "Go to line number LINE."
   (save-restriction
     (widen)
     (goto-char (point-min))
     (forward-line (1- line))))
 
-(defun org-freemind-write-mm-buffer (org-buffer mm-buffer node-at-line)
+(defun org-freeplane-write-mm-buffer (org-buffer mm-buffer node-at-line)
   (with-current-buffer org-buffer
-    (dolist (node-style org-freemind-node-styles)
+    (dolist (node-style org-freeplane-node-styles)
       (when (org-string-match-p (car node-style) buffer-file-name)
-        (setq org-freemind-node-style (cadr node-style))))
-    ;;(message "org-freemind-node-style =%s" org-freemind-node-style)
+        (setq org-freeplane-node-style (cadr node-style))))
+    ;;(message "org-freeplane-node-style =%s" org-freeplane-node-style)
     (save-match-data
       (let* ((drawers (copy-sequence org-drawers))
              drawers-regexp
@@ -665,14 +670,14 @@ Otherwise give an error say the file exists."
         (with-current-buffer mm-buffer
           (erase-buffer)
           (setq buffer-file-coding-system 'utf-8)
-          ;; Fix-me: Currently Freemind (ver 0.9.0 RC9) does not support this:
+          ;; Fix-me: Currently Freeplane (ver 0.9.0 RC9) does not support this:
           ;;(insert "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n")
           (insert "<map version=\"0.9.0\">\n")
-          (insert "<!-- To view this file, download free mind mapping software FreeMind or Freeplane from http://freemind.sourceforge.net/http://freeplane.org -->\n"))
+          (insert "<!-- To view this file, download free mind mapping software Freeplane or Freeplane from http://freeplane.sourceforge.net/http://freeplane.org -->\n"))
         (save-excursion
           ;; Get special buffer vars:
           (goto-char (point-min))
-          (message "Writing Freemind file...")
+          (message "Writing Freeplane file...")
           (while (re-search-forward "^#\\+DRAWERS:" nil t)
             (let ((dr-txt (buffer-substring-no-properties (match-end 0) (line-end-position))))
               (setq drawers (append drawers (split-string dr-txt) nil))))
@@ -693,14 +698,14 @@ Otherwise give an error say the file exists."
           (if node-at-line
               ;; Get number of top nodes and last line for this node
               (progn
-                (org-freemind-goto-line node-at-line)
-                (unless (looking-at org-freemind-node-pattern)
+                (org-freeplane-goto-line node-at-line)
+                (unless (looking-at org-freeplane-node-pattern)
                   (error "No node at line %s" node-at-line))
                 (setq node-at-line-level (length (match-string-no-properties 1)))
                 (forward-line)
                 (setq node-at-line-last
                       (catch 'last-line
-                        (while (re-search-forward org-freemind-node-pattern nil t)
+                        (while (re-search-forward org-freeplane-node-pattern nil t)
                           (let* ((m1 (match-string-no-properties 1))
                                  (level (length m1)))
                             (if (<= level node-at-line-level)
@@ -711,11 +716,11 @@ Otherwise give an error say the file exists."
                                   (setq num-top2-nodes (1+ num-top2-nodes))))))))
                 (setq current-level node-at-line-level)
                 (setq num-top1-nodes 1)
-                (org-freemind-goto-line node-at-line))
+                (org-freeplane-goto-line node-at-line))
 
             ;; First get number of top nodes
             (goto-char (point-min))
-            (while (re-search-forward org-freemind-node-pattern nil t)
+            (while (re-search-forward org-freeplane-node-pattern nil t)
               (let* ((m1 (match-string-no-properties 1))
                      (level (length m1)))
                 (if (= level 1)
@@ -739,7 +744,7 @@ Otherwise give an error say the file exists."
                           "</head>"
                           "<body>"
                           "<p>"
-                          org-freemind-org-nfix "WHOLE FILE"
+                          org-freeplane-org-nfix "WHOLE FILE"
                           "</p>"
                           "</body>"
                           "</html>"
@@ -757,7 +762,7 @@ Otherwise give an error say the file exists."
                 next-children-visible
                 )
             (while (and
-                    (re-search-forward org-freemind-node-pattern nil t)
+                    (re-search-forward org-freeplane-node-pattern nil t)
                     (if node-at-line-last (<= (point) node-at-line-last) t)
                     )
               (let* ((next-m1 (match-string-no-properties 1))
@@ -771,9 +776,9 @@ Otherwise give an error say the file exists."
                                (get-char-property (line-end-position) 'invisible))))
                 (setq next-has-some-visible-child
                       (if next-children-visible t
-                        (org-freemind-look-for-visible-child next-level)))
+                        (org-freeplane-look-for-visible-child next-level)))
                 (when this-m2
-                  (setq num-left-nodes (org-freemind-write-node mm-buffer drawers-regexp num-left-nodes base-level current-level next-level this-m2 this-node-end this-children-visible next-node-start next-has-some-visible-child)))
+                  (setq num-left-nodes (org-freeplane-write-node mm-buffer drawers-regexp num-left-nodes base-level current-level next-level this-m2 this-node-end this-children-visible next-node-start next-has-some-visible-child)))
                 (when (if (= num-top1-nodes 1) (> current-level base-level) t)
                   (while (>= current-level next-level)
                     (with-current-buffer mm-buffer
@@ -795,7 +800,7 @@ Otherwise give an error say the file exists."
 	    (setq next-node-start (if node-at-line-last
 				      (1+ node-at-line-last)
 				    (point-max)))
-	    (setq num-left-nodes (org-freemind-write-node mm-buffer drawers-regexp num-left-nodes base-level current-level next-level this-m2 this-node-end this-children-visible next-node-start next-has-some-visible-child))
+	    (setq num-left-nodes (org-freeplane-write-node mm-buffer drawers-regexp num-left-nodes base-level current-level next-level this-m2 this-node-end this-children-visible next-node-start next-has-some-visible-child))
 	    (with-current-buffer mm-buffer (insert "</node>\n"))
 					;)
             )
@@ -811,24 +816,24 @@ Otherwise give an error say the file exists."
             (goto-char (point-min))
             ))))))
 
-(defun org-freemind-get-node-style (node-name)
+(defun org-freeplane-get-node-style (node-name)
   "NOT READY YET."
   ;;<node BACKGROUND_COLOR="#eeee00" CREATED="1234668815593" MODIFIED="1234668815593" STYLE="bubble">
   ;;<font BOLD="true" NAME="SansSerif" SIZE="12"/>
   (let (node-styles
         node-style)
-    (dolist (style-list org-freemind-node-style)
+    (dolist (style-list org-freeplane-node-style)
       (let ((node-regexp (car style-list)))
         (message "node-regexp=%s node-name=%s" node-regexp node-name)
         (when (org-string-match-p node-regexp node-name)
-          ;;(setq node-style (org-freemind-do-apply-node-style style-list))
+          ;;(setq node-style (org-freeplane-do-apply-node-style style-list))
           (setq node-style (cadr style-list))
           (when node-style
             (message "node-style=%s" node-style)
             (setq node-styles (append node-styles node-style)))
           )))))
 
-(defun org-freemind-do-apply-node-style (style-list)
+(defun org-freeplane-do-apply-node-style (style-list)
   (message "style-list=%S" style-list)
   (let ((node-style 'fork)
         (color "red")
@@ -889,9 +894,9 @@ Otherwise give an error say the file exists."
         ))))
 
 ;;;###autoload
-(defun org-freemind-from-org-mode-node (node-line mm-file)
-  "Convert node at line NODE-LINE to the FreeMind file MM-FILE.
-See `org-freemind-from-org-mode' for more information."
+(defun org-freeplane-from-org-mode-node (node-line mm-file)
+  "Convert node at line NODE-LINE to the Freeplane file MM-FILE.
+See `org-freeplane-from-org-mode' for more information."
   (interactive
    (progn
      (unless (org-back-to-heading nil)
@@ -902,30 +907,30 @@ See `org-freemind-from-org-mode' for more information."
                                        "nofile")
                                      "-line-" (number-to-string line)
                                      ".mm"))
-            (mm-file (read-file-name "Output FreeMind file: " nil nil nil default-mm-file)))
+            (mm-file (read-file-name "Output Freeplane file: " nil nil nil default-mm-file)))
        (list line mm-file))))
-  (when (org-freemind-check-overwrite mm-file (org-called-interactively-p 'any))
+  (when (org-freeplane-check-overwrite mm-file (org-called-interactively-p 'any))
     (let ((org-buffer (current-buffer))
           (mm-buffer (find-file-noselect mm-file)))
-      (org-freemind-write-mm-buffer org-buffer mm-buffer node-line)
+      (org-freeplane-write-mm-buffer org-buffer mm-buffer node-line)
       (with-current-buffer mm-buffer
         (basic-save-buffer)
         (when (org-called-interactively-p 'any)
           (switch-to-buffer-other-window mm-buffer)
-          (when (y-or-n-p "Show in FreeMind? ")
-            (org-freemind-show buffer-file-name)))))))
+          (when (y-or-n-p "Show in Freeplane? ")
+            (org-freeplane-show buffer-file-name)))))))
 
 ;;;###autoload
-(defun org-freemind-from-org-mode (org-file mm-file)
-  "Convert the `org-mode' file ORG-FILE to the FreeMind file MM-FILE.
-All the nodes will be opened or closed in Freemind just as you
+(defun org-freeplane-from-org-mode (org-file mm-file)
+  "Convert the `org-mode' file ORG-FILE to the Freeplane file MM-FILE.
+All the nodes will be opened or closed in Freeplane just as you
 have them in `org-mode'.
 
-Note that exporting to Freemind also gives you an alternative way
+Note that exporting to Freeplane also gives you an alternative way
 to export from `org-mode' to html.  You can create a dynamic html
-version of the your org file, by first exporting to Freemind and
-then exporting from Freemind to html.  The 'As
-XHTML (JavaScript)' version in Freemind works very well \(and you
+version of the your org file, by first exporting to Freeplane and
+then exporting from Freeplane to html.  The 'As
+XHTML (JavaScript)' version in Freeplane works very well \(and you
 can use a CSS stylesheet to style it)."
   ;; Fix-me: better doc, include recommendations etc.
   (interactive
@@ -935,22 +940,22 @@ can use a CSS stylesheet to style it)."
                                 (file-name-nondirectory org-file)
                               "nofile")
                             ".mm"))
-          (mm-file (read-file-name "Output FreeMind file: " nil nil nil default-mm-file)))
+          (mm-file (read-file-name "Output Freeplane file: " nil nil nil default-mm-file)))
      (list org-file mm-file)))
-  (when (org-freemind-check-overwrite mm-file (org-called-interactively-p 'any))
+  (when (org-freeplane-check-overwrite mm-file (org-called-interactively-p 'any))
     (let ((org-buffer (if org-file (find-file-noselect org-file) (current-buffer)))
           (mm-buffer (find-file-noselect mm-file)))
-      (org-freemind-write-mm-buffer org-buffer mm-buffer nil)
+      (org-freeplane-write-mm-buffer org-buffer mm-buffer nil)
       (with-current-buffer mm-buffer
         (basic-save-buffer)
         (when (org-called-interactively-p 'any)
           (switch-to-buffer-other-window mm-buffer)
-          (when (y-or-n-p "Show in FreeMind? ")
-            (org-freemind-show buffer-file-name)))))))
+          (when (y-or-n-p "Show in Freeplane? ")
+            (org-freeplane-show buffer-file-name)))))))
 
 ;;;###autoload
-(defun org-freemind-from-org-sparse-tree (org-buffer mm-file)
-  "Convert visible part of buffer ORG-BUFFER to FreeMind file MM-FILE."
+(defun org-freeplane-from-org-sparse-tree (org-buffer mm-file)
+  "Convert visible part of buffer ORG-BUFFER to Freeplane file MM-FILE."
   (interactive
    (let* ((org-file buffer-file-name)
           (default-mm-file (concat
@@ -958,31 +963,31 @@ can use a CSS stylesheet to style it)."
                                 (file-name-nondirectory org-file)
                               "nofile")
                             "-sparse.mm"))
-          (mm-file (read-file-name "Output FreeMind file: " nil nil nil default-mm-file)))
+          (mm-file (read-file-name "Output Freeplane file: " nil nil nil default-mm-file)))
      (list (current-buffer) mm-file)))
-  (when (org-freemind-check-overwrite mm-file (org-called-interactively-p 'any))
+  (when (org-freeplane-check-overwrite mm-file (org-called-interactively-p 'any))
     (let (org-buffer
           (mm-buffer (find-file-noselect mm-file)))
       (save-window-excursion
         (org-export-visible ?\  nil)
         (setq org-buffer (current-buffer)))
-      (org-freemind-write-mm-buffer org-buffer mm-buffer nil)
+      (org-freeplane-write-mm-buffer org-buffer mm-buffer nil)
       (with-current-buffer mm-buffer
         (basic-save-buffer)
         (when (org-called-interactively-p 'any)
           (switch-to-buffer-other-window mm-buffer)
-          (when (y-or-n-p "Show in FreeMind? ")
-            (org-freemind-show buffer-file-name)))))))
+          (when (y-or-n-p "Show in Freeplane? ")
+            (org-freeplane-show buffer-file-name)))))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; FreeMind => Org
+;;; Freeplane => Org
 
-;; (sort '(b a c) 'org-freemind-lt-symbols)
-(defun org-freemind-lt-symbols (sym-a sym-b)
+;; (sort '(b a c) 'org-freeplane-lt-symbols)
+(defun org-freeplane-lt-symbols (sym-a sym-b)
   (string< (symbol-name sym-a) (symbol-name sym-b)))
-;; (sort '((b . 1) (a . 2) (c . 3)) 'org-freemind-lt-xml-attrs)
-(defun org-freemind-lt-xml-attrs (attr-a attr-b)
+;; (sort '((b . 1) (a . 2) (c . 3)) 'org-freeplane-lt-xml-attrs)
+(defun org-freeplane-lt-xml-attrs (attr-a attr-b)
   (string< (symbol-name (car attr-a)) (symbol-name (car attr-b))))
 
 ;; xml-parse-region gives things like
@@ -996,15 +1001,15 @@ can use a CSS stylesheet to style it)."
 
 ;; '(a . nil)
 
-;; (org-freemind-symbols= 'a (car '(A B)))
-(defsubst org-freemind-symbols= (sym-a sym-b)
+;; (org-freeplane-symbols= 'a (car '(A B)))
+(defsubst org-freeplane-symbols= (sym-a sym-b)
   "Return t if downcased names of SYM-A and SYM-B are equal.
 SYM-A and SYM-B should be symbols."
   (or (eq sym-a sym-b)
       (string= (downcase (symbol-name sym-a))
                (downcase (symbol-name sym-b)))))
 
-(defun org-freemind-get-children (parent path)
+(defun org-freeplane-get-children (parent path)
   "Find children node to PARENT from PATH.
 PATH should be a list of steps, where each step has the form
 
@@ -1021,7 +1026,7 @@ PATH should be a list of steps, where each step has the form
                      ))
          (step (car path))
          (step-node (if (listp step) (car step) step))
-         (step-attr-list (when (listp step) (sort (cdr step) 'org-freemind-lt-xml-attrs)))
+         (step-attr-list (when (listp step) (sort (cdr step) 'org-freeplane-lt-xml-attrs)))
          (path-tail (cdr path))
          path-children)
     (dolist (child children)
@@ -1030,7 +1035,7 @@ PATH should be a list of steps, where each step has the form
         ;; compare node name
         (when (if (not step-node)
                   t ;; any node name
-                (org-freemind-symbols= step-node (car child)))
+                (org-freeplane-symbols= step-node (car child)))
           (if (not step-attr-list)
               ;;(throw 'path-child child) ;; no attr to care about
               (add-to-list 'path-children child)
@@ -1038,7 +1043,7 @@ PATH should be a list of steps, where each step has the form
                    (step-attr-copy (copy-sequence step-attr-list)))
               (dolist (child-attr child-attr-list)
 		;; Compare attr names:
-                (when (org-freemind-symbols= (caar step-attr-copy) (car child-attr))
+                (when (org-freeplane-symbols= (caar step-attr-copy) (car child-attr))
                   ;; Compare values:
                   (let ((step-val (cdar step-attr-copy))
                         (child-val (cdr child-attr)))
@@ -1052,24 +1057,24 @@ PATH should be a list of steps, where each step has the form
                 (add-to-list 'path-children child)
                 ))))))
     (if path-tail
-        (org-freemind-get-children path-children path-tail)
+        (org-freeplane-get-children path-children path-tail)
       path-children)))
 
-(defun org-freemind-get-richcontent-node (node)
+(defun org-freeplane-get-richcontent-node (node)
   (let ((rc-nodes
-         (org-freemind-get-children node '((richcontent (type . "NODE")) html body))))
+         (org-freeplane-get-children node '((richcontent (type . "NODE")) html body))))
     (when (> (length rc-nodes) 1)
       (lwarn t :warning "Unexpected structure: several <richcontent type=\"NODE\" ...>"))
     (car rc-nodes)))
 
-(defun org-freemind-get-richcontent-note (node)
+(defun org-freeplane-get-richcontent-note (node)
   (let ((rc-notes
-         (org-freemind-get-children node '((richcontent (type . "NOTE")) html body))))
+         (org-freeplane-get-children node '((richcontent (type . "NOTE")) html body))))
     (when (> (length rc-notes) 1)
       (lwarn t :warning "Unexpected structure: several <richcontent type=\"NOTE\" ...>"))
     (car rc-notes)))
 
-(defun org-freemind-test-get-tree-text ()
+(defun org-freeplane-test-get-tree-text ()
   (let ((node '(p nil "\n"
 		  (a
 		   ((href . "link"))
@@ -1077,10 +1082,10 @@ PATH should be a list of steps, where each step has the form
 		  "\n"
 		  (b nil "hej")
 		  "\n")))
-    (org-freemind-get-tree-text node)))
-;; (org-freemind-test-get-tree-text)
+    (org-freeplane-get-tree-text node)))
+;; (org-freeplane-test-get-tree-text)
 
-(defun org-freemind-get-tree-text (node)
+(defun org-freeplane-get-tree-text (node)
   (when node
     (let ((ntxt "")
           (link nil)
@@ -1103,7 +1108,7 @@ PATH should be a list of steps, where each step has the form
                (setq ntxt (concat ntxt n))))
             ((and n (listp n))
              (if (symbolp (car n))
-                 (setq ntxt (concat ntxt (org-freemind-get-tree-text n)))
+                 (setq ntxt (concat ntxt (org-freeplane-get-tree-text n)))
                ;; This should be the attributes:
                (dolist (att-val n)
                  (let ((att (car att-val))
@@ -1116,40 +1121,40 @@ PATH should be a list of steps, where each step has the form
       ;;(setq ntxt (concat ntxt (format "{%s}" n)))
       ntxt)))
 
-(defun org-freemind-get-richcontent-node-text (node)
+(defun org-freeplane-get-richcontent-node-text (node)
   "Get the node text as from the richcontent node NODE."
   (save-match-data
-    (let* ((rc (org-freemind-get-richcontent-node node))
-           (txt (org-freemind-get-tree-text rc)))
+    (let* ((rc (org-freeplane-get-richcontent-node node))
+           (txt (org-freeplane-get-tree-text rc)))
       ;;(when txt (setq txt (replace-regexp-in-string "[[:space:]]+" " " txt)))
       txt
       )))
 
-(defun org-freemind-get-richcontent-note-text (node)
+(defun org-freeplane-get-richcontent-note-text (node)
   "Get the node text as from the richcontent note NODE."
   (save-match-data
-    (let* ((rc (org-freemind-get-richcontent-note node))
-           (txt (when rc (org-freemind-get-tree-text rc))))
+    (let* ((rc (org-freeplane-get-richcontent-note node))
+           (txt (when rc (org-freeplane-get-tree-text rc))))
       ;;(when txt (setq txt (replace-regexp-in-string "[[:space:]]+" " " txt)))
       txt
       )))
 
-(defun org-freemind-get-icon-names (node)
-  (let* ((icon-nodes (org-freemind-get-children node '((icon ))))
+(defun org-freeplane-get-icon-names (node)
+  (let* ((icon-nodes (org-freeplane-get-children node '((icon ))))
          names)
     (dolist (icn icon-nodes)
       (setq names (cons (cdr (assq 'builtin (cadr icn))) names)))
     ;; (icon (builtin . "full-1")) ;; TODO:Felix??
     names))
 
-(defun org-freemind-node-to-org (node level skip-levels)
+(defun org-freeplane-node-to-org (node level skip-levels)
   (let ((qname (car node))
         (attributes (cadr node))
         text
         ;; Fix-me: note is never inserted
-        (note (org-freemind-get-richcontent-note-text node))
+        (note (org-freeplane-get-richcontent-note-text node))
         (mark "-- This is more about ")
-        (icons (org-freemind-get-icon-names node))
+        (icons (org-freeplane-get-icon-names node))
         (children (cddr node)))
     (when (< 0 (- level skip-levels))
       (dolist (attrib attributes)
@@ -1158,7 +1163,7 @@ PATH should be a list of steps, where each step has the form
           ('text (setq text (cdr attrib)))))
       (unless text
         ;; There should be a richcontent node holding the text:
-        (setq text (org-freemind-get-richcontent-node-text node)))
+        (setq text (org-freeplane-get-richcontent-node-text node)))
       (when icons
         (when (member "full-1" icons) (setq text (concat "[#A] " text)))
         (when (member "full-2" icons) (setq text (concat "[#B] " text)))
@@ -1183,26 +1188,26 @@ PATH should be a list of steps, where each step has the form
     (dolist (child children)
       (unless (or (null child)
                   (stringp child))
-        (org-freemind-node-to-org child (1+ level) skip-levels)))))
+        (org-freeplane-node-to-org child (1+ level) skip-levels)))))
 
 ;; Fix-me: put back special things, like drawers that are stored in
 ;; the notes.  Should maybe all notes contents be put in drawers?
 ;;;###autoload
-(defun org-freemind-to-org-mode (mm-file org-file)
-  "Convert FreeMind file MM-FILE to `org-mode' file ORG-FILE."
+(defun org-freeplane-to-org-mode (mm-file org-file)
+  "Convert Freeplane file MM-FILE to `org-mode' file ORG-FILE."
   (interactive
    (save-match-data
      (let* ((mm-file (buffer-file-name))
             (default-org-file (concat (file-name-nondirectory mm-file) ".org"))
             (org-file (read-file-name "Output org-mode file: " nil nil nil default-org-file)))
        (list mm-file org-file))))
-  (when (org-freemind-check-overwrite org-file (org-called-interactively-p 'any))
+  (when (org-freeplane-check-overwrite org-file (org-called-interactively-p 'any))
     (let ((mm-buffer (find-file-noselect mm-file))
           (org-buffer (find-file-noselect org-file)))
       (with-current-buffer mm-buffer
         (let* ((xml-list (xml-parse-file mm-file))
                (top-node (cadr (cddar xml-list)))
-               (note (org-freemind-get-richcontent-note-text top-node))
+               (note (org-freeplane-get-richcontent-note-text top-node))
                (skip-levels
                 (if (and note
                          (string-match "^--org-mode: WHOLE FILE$" note))
@@ -1210,17 +1215,17 @@ PATH should be a list of steps, where each step has the form
                   0)))
           (with-current-buffer org-buffer
             (erase-buffer)
-            (org-freemind-node-to-org top-node 1 skip-levels)
+            (org-freeplane-node-to-org top-node 1 skip-levels)
             (goto-char (point-min))
             (org-set-tags t t) ;; Align all tags
             )
           (switch-to-buffer-other-window org-buffer)
           )))))
 
-(provide 'org-freemind)
+(provide 'org-freeplane)
 
 ;; Local variables:
 ;; generated-autoload-file: "org-loaddefs.el"
 ;; End:
 
-;;; org-freemind.el ends here
+;;; org-freeplane.el ends here
