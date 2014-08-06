@@ -587,10 +587,13 @@ DRAWERS-REGEXP are converted to freeplane notes."
         (unless (or this-children-visible
                     next-has-some-visible-child)
           (insert " FOLDED=\"true\"")))
-      (when (and (= current-level (1+ base-level))
-                 (> num-left-nodes 0))
-        (setq num-left-nodes (1- num-left-nodes))
-        (insert " POSITION=\"left\""))
+
+      ;; NOTE: disable distributing nodes to the left and right of the root node
+      ;; (when (and (= current-level (1+ base-level))
+      ;;            (> num-left-nodes 0))
+      ;;   (setq num-left-nodes (1- num-left-nodes))
+      ;;   (insert " POSITION=\"left\""))
+
       (when this-bg-color
         (insert " BACKGROUND_COLOR=\"" this-bg-color "\""))
       (insert ">\n")
