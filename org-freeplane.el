@@ -536,6 +536,8 @@ DRAWERS-REGEXP are converted to freeplane notes."
       (setq this-m2 (replace-match "" nil nil this-m2))
       (add-to-list 'this-icons "unchecked")
       (setq this-bg-color "#ffff88")
+
+      ;; handle priorities, e.g. * TODO [#A] foo
       (when (string-match "\\[#\\(.\\)\\]" this-m2)
         (let ((prior (string-to-char (match-string 1 this-m2))))
           (setq this-m2 (replace-match "" nil nil this-m2))
