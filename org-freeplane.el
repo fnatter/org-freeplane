@@ -684,7 +684,7 @@ Otherwise give an error say the file exists."
           (setq buffer-file-coding-system 'utf-8)
           ;; Fix-me: Currently Freeplane (ver 0.9.0 RC9) does not support this:
           ;;(insert "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n")
-          (insert "<map version=\"0.9.0\">\n")
+          (insert "<map version=\"freeplane 1.3.0\">\n")
           (insert "<!-- To view this file, download the free mind mapping software Freeplane from http://www.freeplane.org -->\n"))
         (save-excursion
           ;; Get special buffer vars:
