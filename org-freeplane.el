@@ -568,10 +568,16 @@ DRAWERS-REGEXP are converted to freeplane notes."
       (add-to-list 'this-icons "checked"))
 
     (setq this-m2 (org-trim this-m2))
+
+    ;; handle (external) links
     (when (string-match org-bracket-link-analytic-regexp this-m2)
-      (setq this-m2-link (concat "LINK=\"" (match-string 1 this-m2)
-                                 (match-string 3 this-m2) "\" ")
-            this-m2 (replace-match "\\5" nil nil this-m2 0)))
+      (setq link-url (concat (match-string 1 this-m2)
+                             (match-string 3 this-m2)))
+      (setq this-m2-link (concat "LINK=\"" link-url "\" ")
+            this-m2 link-url))
+    ;; TODO: what is this supposed to do??
+    ;;            this-m2 (replace-match "\\5" nil nil this-m2 0)))
+
     (setq this-m2-escaped (org-freeplane-escape-str-from-org this-m2))
     (let ((node-notes (org-freeplane-org-text-to-freeplane-subnode/note
                        this-m2-escaped
